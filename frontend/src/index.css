@@ -1,0 +1,124 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.hero-section {
+  min-height: 520px;
+  background: linear-gradient(rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.62)),
+    url("https://images.unsplash.com/photo-1566073771259-6a8506099945");
+  background-size: cover;
+  background-position: center;
+}
+
+.feature-icon {
+  font-size: 48px;
+}
+
+.room-card {
+  transition: 0.25s;
+  overflow: hidden;
+}
+
+.room-card:hover {
+  transform: translateY(-6px);
+}
+
+.room-image {
+  height: 180px;
+  background: linear-gradient(135deg, #343a40, #6c757d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.room-image span {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.btn {
+  border-radius: 8px;
+}
+
+.card {
+  border-radius: 14px;
+}
+.auth-page {
+  min-height: calc(100vh - 56px);
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.auth-card {
+  border-radius: 18px;
+}
+
+.form-control {
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #212529;
+}
+.booking-box {
+  border-radius: 18px;
+  border-left: 6px solid #ffc107 !important;
+}
+
+.badge {
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+.dashboard-card {
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card .card-body {
+  min-height: 130px;
+}
+
+.dashboard-icon {
+  position: absolute;
+  right: 18px;
+  bottom: 12px;
+  font-size: 42px;
+  opacity: 0.25;
+}
+
+.status-card {
+  border-radius: 16px;
+}
+
+.status-card h5 {
+  font-size: 36px;
+}
+
+.revenue-card {
+  border-radius: 18px;
+  border-left: 6px solid #212529 !important;
+}
+.admin-form-card {
+  border-radius: 18px;
+  border-left: 6px solid #ffc107 !important;
+}
+
+.form-select {
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.form-select:focus {
+  box-shadow: none;
+  border-color: #212529;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+}
