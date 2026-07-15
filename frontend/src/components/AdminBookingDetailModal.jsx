@@ -11,7 +11,7 @@ function AdminBookingDetailModal({ bookingId, onClose, onPaidSuccess }) {
 
   const formatMoney = (value) => {
     return Number(value || 0).toLocaleString("vi-VN") + " VNĐ";
-  };
+  };    
 
   const formatStatus = (status) => {
     if (status === "pending") return "Chờ xác nhận";

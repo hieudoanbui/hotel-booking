@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Controllers;
-
 use PDO;
 use Throwable;
 use App\Models\Service;

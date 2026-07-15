@@ -12,7 +12,6 @@ class AuthMiddleware
             Response::error("Bạn cần đăng nhập để thực hiện chức năng này.", 401);
         }
     }
-
     public static function requireAdmin(): void
     {
         self::requireLogin();

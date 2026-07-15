@@ -5,9 +5,11 @@ import RoomAmenities from "../components/RoomAmenities";
 import RoomReviews from "../components/RoomReviews";
 import RoomDetailModal from "../components/RoomDetailModal";
 import RoomFilters from "../components/RoomFilters";
+import { useLanguage } from "../i18n/LanguageContext";
 
 function Rooms() {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
 
   const [rooms, setRooms] = useState([]);
   const [services, setServices] = useState([]);
@@ -42,6 +44,114 @@ function Rooms() {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState("");
 
+  const text = {
+    ...t.rooms,
+    pageTitle: language === "en" ? "Rooms" : "Danh sách phòng",
+    pageSubtitle:
+      language === "en"
+        ? "Choose a suitable room and book online."
+        : "Lựa chọn phòng phù hợp và tiến hành đặt phòng trực tuyến.",
+    loadingRooms:
+      language === "en"
+        ? "Loading room list..."
+        : "Đang tải danh sách phòng...",
+    loadDataError:
+      language === "en"
+        ? "Unable to load room or service data."
+        : "Không thể tải dữ liệu phòng hoặc dịch vụ.",
+    findAvailableRooms:
+      language === "en" ? "Find available rooms" : "Tìm phòng trống",
+    searching: language === "en" ? "Searching..." : "Đang tìm...",
+    allRooms: language === "en" ? "View all" : "Xem tất cả",
+    availableResult:
+      language === "en"
+        ? "Showing available rooms from"
+        : "Đang hiển thị các phòng còn trống từ",
+    to: language === "en" ? "to" : "đến",
+    noAvailableRooms:
+      language === "en"
+        ? "No suitable rooms are available for this date range."
+        : "Không có phòng trống phù hợp trong khoảng ngày này.",
+    foundAvailableRooms:
+      language === "en"
+        ? "Suitable available rooms found."
+        : "Đã tìm thấy phòng trống phù hợp.",
+    searchFailed:
+      language === "en"
+        ? "Unable to search available rooms. Please try again."
+        : "Không thể tìm phòng trống. Vui lòng thử lại.",
+    reloadRoomsFailed:
+      language === "en"
+        ? "Unable to reload room list."
+        : "Không thể tải lại danh sách phòng.",
+    loginRequired:
+      language === "en"
+        ? "You need to sign in to book a room."
+        : "Bạn cần đăng nhập để đặt phòng.",
+    selectRoom:
+      language === "en" ? "Please choose a room." : "Vui lòng chọn phòng.",
+    bookingTitle: language === "en" ? "Booking" : "Đặt phòng",
+    roomNumber: language === "en" ? "Room number" : "Số phòng",
+    pricePerNight: language === "en" ? "Price / night" : "Giá / đêm",
+    nightsLabel: language === "en" ? "Nights" : "Số đêm",
+    extraServices: language === "en" ? "Extra services" : "Dịch vụ thêm",
+    noServices:
+      language === "en" ? "No services available." : "Chưa có dịch vụ nào.",
+    promoCode: language === "en" ? "Promotion code" : "Mã giảm giá",
+    promoPlaceholder:
+      language === "en"
+        ? "Enter WELCOME10 or SUMMER200"
+        : "Nhập mã WELCOME10 hoặc SUMMER200",
+    notePlaceholder:
+      language === "en"
+        ? "Enter extra requests if needed"
+        : "Nhập yêu cầu thêm nếu có",
+    roomPrice: language === "en" ? "Room price" : "Tiền phòng",
+    servicePrice: language === "en" ? "Service price" : "Tiền dịch vụ",
+    temporaryTotal: language === "en" ? "Subtotal" : "Tạm tính",
+    discount: language === "en" ? "Discount" : "Giảm giá",
+    cancelSelection: language === "en" ? "Cancel selection" : "Hủy chọn",
+    confirmBooking:
+      language === "en" ? "Confirm booking" : "Xác nhận đặt phòng",
+    bookingSuccessFull:
+      language === "en"
+        ? "Booking created successfully. Please wait for admin confirmation."
+        : "Đặt phòng thành công. Vui lòng chờ admin xác nhận.",
+    clickViewDetails:
+      language === "en" ? "Click to view details" : "Bấm để xem chi tiết",
+    viewDetails: language === "en" ? "View details" : "Xem chi tiết",
+    noRoomsByFilter:
+      language === "en"
+        ? "No rooms match the selected filters."
+        : "Không tìm thấy phòng phù hợp với bộ lọc.",
+    promotionWelcome:
+      language === "en"
+        ? "Code WELCOME10: 10% off the total order."
+        : "Mã WELCOME10: giảm 10% tổng đơn.",
+    promotionSummer:
+      language === "en"
+        ? "Code SUMMER200: 200,000 VND off."
+        : "Mã SUMMER200: giảm 200.000 VNĐ.",
+    promotionChecking:
+      language === "en"
+        ? "This code will be checked when the booking is confirmed."
+        : "Mã này sẽ được hệ thống kiểm tra khi xác nhận đặt phòng.",
+  };
+
+  const currencyLocale = language === "en" ? "en-US" : "vi-VN";
+
+  const formatMoney = (value) => {
+    return `${Number(value || 0).toLocaleString(currencyLocale)} VND`;
+  };
+
+  const getApiErrorMessage = (error, fallback) => {
+    if (language === "en") {
+      return fallback;
+    }
+
+    return error.response?.data?.message || error.response?.data?.error || fallback;
+  };
+
   const fetchRooms = async () => {
     const response = await axiosClient.get("/rooms");
     const roomData = response.data?.data?.rooms || [];
@@ -59,15 +169,15 @@ function Rooms() {
       try {
         await Promise.all([fetchRooms(), fetchServices()]);
       } catch (error) {
-        console.error("Lỗi tải dữ liệu:", error);
-        setMessage("Không thể tải dữ liệu phòng hoặc dịch vụ.");
+        console.error("Room data loading error:", error);
+        setMessage(text.loadDataError);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [language]);
 
   const handleSearchChange = (e) => {
     const { name, value } = e.target;
@@ -86,12 +196,12 @@ function Rooms() {
       setSuccess("");
 
       if (!searchForm.check_in || !searchForm.check_out) {
-        setMessage("Vui lòng chọn ngày nhận phòng và ngày trả phòng.");
+        setMessage(text.pleaseChooseDate);
         return;
       }
 
       if (new Date(searchForm.check_in) >= new Date(searchForm.check_out)) {
-        setMessage("Ngày trả phòng phải sau ngày nhận phòng.");
+        setMessage(text.invalidDate);
         return;
       }
 
@@ -106,6 +216,7 @@ function Rooms() {
       });
 
       const availableRooms = response.data?.data?.rooms || [];
+
       setRooms(availableRooms);
       setSearched(true);
       setSelectedRoom(null);
@@ -119,15 +230,12 @@ function Rooms() {
       });
 
       if (availableRooms.length === 0) {
-        setMessage("Không có phòng trống phù hợp trong khoảng ngày này.");
+        setMessage(text.noAvailableRooms);
       } else {
-        setSuccess("Đã tìm thấy phòng trống phù hợp.");
+        setSuccess(text.foundAvailableRooms);
       }
     } catch (error) {
-      setMessage(
-        error.response?.data?.message ||
-          "Không thể tìm phòng trống. Vui lòng thử lại."
-      );
+      setMessage(getApiErrorMessage(error, text.searchFailed));
     } finally {
       setSearchLoading(false);
     }
@@ -156,7 +264,7 @@ function Rooms() {
 
       await fetchRooms();
     } catch (error) {
-      setMessage("Không thể tải lại danh sách phòng.");
+      setMessage(text.reloadRoomsFailed);
     }
   };
 
@@ -169,10 +277,18 @@ function Rooms() {
   };
 
   const handleSelectRoom = (room) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    let user = null;
+
+    try {
+      user =
+        JSON.parse(localStorage.getItem("user") || "null") ||
+        JSON.parse(localStorage.getItem("authUser") || "null");
+    } catch (error) {
+      user = null;
+    }
 
     if (!user) {
-      alert("Bạn cần đăng nhập để đặt phòng.");
+      alert(text.loginRequired);
       navigate("/login");
       return;
     }
@@ -265,14 +381,14 @@ function Rooms() {
     }
 
     if (code === "WELCOME10") {
-      return "Mã WELCOME10: giảm 10% tổng đơn.";
+      return text.promotionWelcome;
     }
 
     if (code === "SUMMER200") {
-      return "Mã SUMMER200: giảm 200.000 VNĐ.";
+      return text.promotionSummer;
     }
 
-    return "Mã này sẽ được hệ thống kiểm tra khi xác nhận đặt phòng.";
+    return text.promotionChecking;
   };
 
   const handleBooking = async (e) => {
@@ -282,20 +398,20 @@ function Rooms() {
     setSuccess("");
 
     if (!selectedRoom) {
-      alert("Vui lòng chọn phòng.");
-      setMessage("Vui lòng chọn phòng.");
+      alert(text.selectRoom);
+      setMessage(text.selectRoom);
       return;
     }
 
     if (!bookingForm.check_in || !bookingForm.check_out) {
-      alert("Vui lòng chọn ngày nhận phòng và ngày trả phòng.");
-      setMessage("Vui lòng chọn ngày nhận phòng và ngày trả phòng.");
+      alert(text.pleaseChooseDate);
+      setMessage(text.pleaseChooseDate);
       return;
     }
 
     if (bookingForm.check_out <= bookingForm.check_in) {
-      alert("Ngày trả phòng phải sau ngày nhận phòng.");
-      setMessage("Ngày trả phòng phải sau ngày nhận phòng.");
+      alert(text.invalidDate);
+      setMessage(text.invalidDate);
       return;
     }
 
@@ -312,8 +428,9 @@ function Rooms() {
       const response = await axiosClient.post("/bookings", bookingData);
 
       const successMessage =
-        response.data.message ||
-        "Đặt phòng thành công. Vui lòng chờ admin xác nhận.";
+        language === "en"
+          ? text.bookingSuccessFull
+          : response.data.message || text.bookingSuccessFull;
 
       alert(successMessage);
       setSuccess(successMessage);
@@ -330,10 +447,7 @@ function Rooms() {
 
       navigate("/my-bookings");
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        "Đặt phòng thất bại. Vui lòng thử lại.";
+      const errorMessage = getApiErrorMessage(error, text.bookingFailed);
 
       alert(errorMessage);
       setMessage(errorMessage);
@@ -343,7 +457,7 @@ function Rooms() {
   if (loading) {
     return (
       <div className="container py-5">
-        <h4>Đang tải danh sách phòng...</h4>
+        <h4>{text.loadingRooms}</h4>
       </div>
     );
   }
@@ -412,22 +526,24 @@ function Rooms() {
   return (
     <div className="container py-5">
       <div className="text-center mb-5">
-        <h2 className="fw-bold">Danh sách phòng</h2>
+        <h2 className="fw-bold">{text.pageTitle}</h2>
 
-        <p className="text-muted">
-          Lựa chọn phòng phù hợp và tiến hành đặt phòng trực tuyến.
-        </p>
+        <p className="text-muted">{text.pageSubtitle}</p>
       </div>
 
       {message && <div className="alert alert-danger">{message}</div>}
       {success && <div className="alert alert-success">{success}</div>}
 
       <div className="available-search-box">
-        <h3>Tìm phòng trống</h3>
+        <h3>{text.findAvailableRooms}</h3>
 
-        <form onSubmit={handleSearchAvailableRooms} className="available-search-form">
+        <form
+          onSubmit={handleSearchAvailableRooms}
+          className="available-search-form"
+        >
           <div className="form-group">
-            <label>Ngày nhận phòng</label>
+            <label>{text.checkIn}</label>
+
             <input
               type="date"
               name="check_in"
@@ -437,7 +553,8 @@ function Rooms() {
           </div>
 
           <div className="form-group">
-            <label>Ngày trả phòng</label>
+            <label>{text.checkOut}</label>
+
             <input
               type="date"
               name="check_out"
@@ -447,7 +564,8 @@ function Rooms() {
           </div>
 
           <div className="form-group">
-            <label>Số người</label>
+            <label>{text.capacity}</label>
+
             <input
               type="number"
               name="capacity"
@@ -458,8 +576,12 @@ function Rooms() {
           </div>
 
           <div className="available-search-actions">
-            <button type="submit" className="btn btn-primary" disabled={searchLoading}>
-              {searchLoading ? "Đang tìm..." : "Tìm phòng trống"}
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={searchLoading}
+            >
+              {searchLoading ? text.searching : text.findAvailableRooms}
             </button>
 
             <button
@@ -467,45 +589,47 @@ function Rooms() {
               className="btn btn-outline-secondary"
               onClick={handleResetAvailableSearch}
             >
-              Xem tất cả
+              {text.allRooms}
             </button>
           </div>
         </form>
 
         {searched && (
           <p className="search-result-note">
-            Đang hiển thị các phòng còn trống từ {searchForm.check_in} đến{" "}
+            {text.availableResult} {searchForm.check_in} {text.to}{" "}
             {searchForm.check_out}.
           </p>
         )}
       </div>
 
-      <RoomFilters filters={filters} setFilters={setFilters} roomTypes={roomTypes} />
+      <RoomFilters
+        filters={filters}
+        setFilters={setFilters}
+        roomTypes={roomTypes}
+      />
 
       {selectedRoom && (
         <div className="card border-0 shadow-sm mb-5 booking-box">
           <div className="card-body p-4">
             <h4 className="fw-bold mb-3">
-              Đặt phòng: {selectedRoom.title}
+              {text.bookingTitle}: {selectedRoom.title}
             </h4>
 
             <div className="row mb-3">
               <div className="col-md-4">
-                <p className="mb-1 text-muted">Số phòng</p>
+                <p className="mb-1 text-muted">{text.roomNumber}</p>
                 <h6>{selectedRoom.room_number}</h6>
               </div>
 
               <div className="col-md-4">
-                <p className="mb-1 text-muted">Loại phòng</p>
+                <p className="mb-1 text-muted">{text.roomType}</p>
                 <h6>{selectedRoom.room_type}</h6>
               </div>
 
               <div className="col-md-4">
-                <p className="mb-1 text-muted">Giá / đêm</p>
+                <p className="mb-1 text-muted">{text.pricePerNight}</p>
 
-                <h6 className="text-danger">
-                  {Number(selectedRoom.price).toLocaleString("vi-VN")} VNĐ
-                </h6>
+                <h6 className="text-danger">{formatMoney(selectedRoom.price)}</h6>
               </div>
             </div>
 
@@ -516,7 +640,7 @@ function Rooms() {
             <form onSubmit={handleBooking}>
               <div className="row">
                 <div className="col-md-4 mb-3">
-                  <label className="form-label">Ngày nhận phòng</label>
+                  <label className="form-label">{text.checkIn}</label>
 
                   <input
                     type="date"
@@ -529,7 +653,7 @@ function Rooms() {
                 </div>
 
                 <div className="col-md-4 mb-3">
-                  <label className="form-label">Ngày trả phòng</label>
+                  <label className="form-label">{text.checkOut}</label>
 
                   <input
                     type="date"
@@ -542,22 +666,24 @@ function Rooms() {
                 </div>
 
                 <div className="col-md-4 mb-3">
-                  <label className="form-label">Số đêm</label>
+                  <label className="form-label">{text.nightsLabel}</label>
 
                   <input
                     type="text"
                     className="form-control"
-                    value={nights > 0 ? `${nights} đêm` : ""}
+                    value={nights > 0 ? `${nights} ${text.nights}` : ""}
                     disabled
                   />
                 </div>
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-bold">Dịch vụ thêm</label>
+                <label className="form-label fw-bold">
+                  {text.extraServices}
+                </label>
 
                 {services.length === 0 && (
-                  <p className="text-muted">Chưa có dịch vụ nào.</p>
+                  <p className="text-muted">{text.noServices}</p>
                 )}
 
                 <div className="row">
@@ -567,14 +693,18 @@ function Rooms() {
                         <input
                           type="checkbox"
                           className="form-check-input me-2"
-                          checked={selectedServiceIds.includes(Number(service.id))}
-                          onChange={() => handleToggleService(Number(service.id))}
+                          checked={selectedServiceIds.includes(
+                            Number(service.id)
+                          )}
+                          onChange={() =>
+                            handleToggleService(Number(service.id))
+                          }
                         />
 
                         <span className="fw-semibold">{service.name}</span>
 
                         <span className="text-danger ms-2">
-                          {Number(service.price).toLocaleString("vi-VN")} VNĐ
+                          {formatMoney(service.price)}
                         </span>
 
                         <div className="text-muted small">
@@ -587,13 +717,13 @@ function Rooms() {
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-bold">Mã giảm giá</label>
+                <label className="form-label fw-bold">{text.promoCode}</label>
 
                 <input
                   type="text"
                   name="promotion_code"
                   className="form-control"
-                  placeholder="Nhập mã WELCOME10 hoặc SUMMER200"
+                  placeholder={text.promoPlaceholder}
                   value={bookingForm.promotion_code}
                   onChange={handleChange}
                 />
@@ -604,13 +734,13 @@ function Rooms() {
               </div>
 
               <div className="mb-3">
-                <label className="form-label">Ghi chú</label>
+                <label className="form-label">{text.note}</label>
 
                 <textarea
                   name="note"
                   className="form-control"
                   rows="3"
-                  placeholder="Nhập yêu cầu thêm nếu có"
+                  placeholder={text.notePlaceholder}
                   value={bookingForm.note}
                   onChange={handleChange}
                 ></textarea>
@@ -618,23 +748,26 @@ function Rooms() {
 
               <div className="price-summary mb-3">
                 <p className="mb-1">
-                  Tiền phòng: <strong>{roomPrice.toLocaleString("vi-VN")} VNĐ</strong>
+                  {text.roomPrice}: <strong>{formatMoney(roomPrice)}</strong>
                 </p>
 
                 <p className="mb-1">
-                  Tiền dịch vụ: <strong>{servicePrice.toLocaleString("vi-VN")} VNĐ</strong>
+                  {text.servicePrice}:{" "}
+                  <strong>{formatMoney(servicePrice)}</strong>
                 </p>
 
                 <p className="mb-1">
-                  Tạm tính: <strong>{beforeDiscount.toLocaleString("vi-VN")} VNĐ</strong>
+                  {text.temporaryTotal}:{" "}
+                  <strong>{formatMoney(beforeDiscount)}</strong>
                 </p>
 
                 <p className="mb-1 text-success">
-                  Giảm giá: <strong>-{discountAmount.toLocaleString("vi-VN")} VNĐ</strong>
+                  {text.discount}:{" "}
+                  <strong>-{formatMoney(discountAmount)}</strong>
                 </p>
 
                 <h5 className="fw-bold text-danger mb-0">
-                  Tổng tiền: {totalPrice.toLocaleString("vi-VN")} VNĐ
+                  {text.totalPrice}: {formatMoney(totalPrice)}
                 </h5>
               </div>
 
@@ -647,11 +780,11 @@ function Rooms() {
                     setSelectedServiceIds([]);
                   }}
                 >
-                  Hủy chọn
+                  {text.cancelSelection}
                 </button>
 
                 <button type="submit" className="btn btn-warning">
-                  Xác nhận đặt phòng
+                  {text.confirmBooking}
                 </button>
               </div>
             </form>
@@ -669,9 +802,7 @@ function Rooms() {
               >
                 <span>{room.room_type}</span>
 
-                <div className="room-image-overlay">
-                  Bấm để xem chi tiết
-                </div>
+                <div className="room-image-overlay">{text.clickViewDetails}</div>
               </div>
 
               <div className="card-body">
@@ -683,11 +814,14 @@ function Rooms() {
                 </h5>
 
                 <p className="text-muted mb-2">
-                  Số phòng: <strong>{room.room_number}</strong>
+                  {text.roomNumber}: <strong>{room.room_number}</strong>
                 </p>
 
                 <p className="text-muted mb-2">
-                  Sức chứa: <strong>{room.capacity} người</strong>
+                  {text.capacity}:{" "}
+                  <strong>
+                    {room.capacity} {text.guests}
+                  </strong>
                 </p>
 
                 <p className="text-muted">{room.description}</p>
@@ -695,21 +829,21 @@ function Rooms() {
                 <RoomAmenities roomId={room.id} />
 
                 <h5 className="text-danger fw-bold mt-3">
-                  {Number(room.price).toLocaleString("vi-VN")} VNĐ / đêm
+                  {formatMoney(room.price)} / {text.perNight}
                 </h5>
 
                 <button
                   className="btn btn-outline-dark w-100 mt-3"
                   onClick={() => handleOpenDetail(room)}
                 >
-                  Xem chi tiết
+                  {text.viewDetails}
                 </button>
 
                 <button
                   className="btn btn-dark w-100 mt-2"
                   onClick={() => handleSelectRoom(room)}
                 >
-                  Đặt phòng
+                  {text.bookThisRoom}
                 </button>
 
                 <RoomReviews roomId={room.id} />
@@ -721,7 +855,7 @@ function Rooms() {
 
       {filteredRooms.length === 0 && (
         <div className="alert alert-warning text-center mt-4">
-          Không tìm thấy phòng phù hợp với bộ lọc.
+          {text.noRoomsByFilter}
         </div>
       )}
 

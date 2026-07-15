@@ -77,10 +77,8 @@ class Booking
         $stmt->bindParam(":note", $note);
         $stmt->bindParam(":promotion_code", $promotionCode);
         $stmt->bindParam(":discount_amount", $discountAmount);
-
         return $stmt->execute();
     }
-
     public function getByUserId(int $userId): array
     {
         $sql = "SELECT

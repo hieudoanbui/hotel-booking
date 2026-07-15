@@ -1,9 +1,43 @@
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #f8f9fa;
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap");
+
+* {
+  box-sizing: border-box;
+  font-family: "Be Vietnam Pro", Arial, Helvetica, sans-serif;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Be Vietnam Pro", Arial, Helvetica, sans-serif;
+  background-color: #f8f9fa;
+  color: #101828;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea,
+.btn,
+.form-control,
+.form-select,
+.card,
+.table,
+.badge {
+  font-family: "Be Vietnam Pro", Arial, Helvetica, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* HERO CŨ */
 .hero-section {
   min-height: 520px;
   background: linear-gradient(rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.62)),
@@ -12,13 +46,16 @@ body {
   background-position: center;
 }
 
+/* ICON */
 .feature-icon {
   font-size: 48px;
 }
 
+/* ROOM CARD */
 .room-card {
   transition: 0.25s;
   overflow: hidden;
+  border-radius: 16px;
 }
 
 .room-card:hover {
@@ -36,16 +73,21 @@ body {
 .room-image span {
   color: white;
   font-size: 28px;
-  font-weight: bold;
+  font-weight: 800;
 }
 
+/* BUTTON */
 .btn {
   border-radius: 8px;
+  font-weight: 600;
 }
 
+/* CARD */
 .card {
   border-radius: 14px;
 }
+
+/* AUTH PAGE */
 .auth-page {
   min-height: calc(100vh - 56px);
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
@@ -55,6 +97,7 @@ body {
   border-radius: 18px;
 }
 
+/* FORM */
 .form-control {
   border-radius: 10px;
   padding: 10px 12px;
@@ -64,15 +107,31 @@ body {
   box-shadow: none;
   border-color: #212529;
 }
+
+.form-select {
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.form-select:focus {
+  box-shadow: none;
+  border-color: #212529;
+}
+
+/* BOOKING */
 .booking-box {
   border-radius: 18px;
   border-left: 6px solid #ffc107 !important;
 }
 
+/* BADGE */
 .badge {
   padding: 8px 10px;
   border-radius: 8px;
+  font-weight: 600;
 }
+
+/* DASHBOARD */
 .dashboard-card {
   border-radius: 18px;
   position: relative;
@@ -97,28 +156,66 @@ body {
 
 .status-card h5 {
   font-size: 36px;
+  font-weight: 800;
 }
 
 .revenue-card {
   border-radius: 18px;
   border-left: 6px solid #212529 !important;
 }
+
+/* ADMIN */
 .admin-form-card {
   border-radius: 18px;
   border-left: 6px solid #ffc107 !important;
 }
 
-.form-select {
-  border-radius: 10px;
-  padding: 10px 12px;
-}
-
-.form-select:focus {
-  box-shadow: none;
-  border-color: #212529;
-}
-
+/* TABLE */
 .table td,
 .table th {
   vertical-align: middle;
+}
+
+.table th {
+  font-weight: 700;
+}
+
+.table td {
+  font-weight: 400;
+}
+
+/* TIÊU ĐỀ CHUNG */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Be Vietnam Pro", Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  color: inherit;
+}
+
+p,
+span,
+label,
+small,
+strong,
+td,
+th,
+li {
+  font-family: "Be Vietnam Pro", Arial, Helvetica, sans-serif;
+}
+
+/* CHỐNG BOOTSTRAP GHI ĐÈ FONT */
+.navbar,
+.navbar-brand,
+.nav-link,
+.dropdown-menu,
+.dropdown-item,
+.modal,
+.modal-title,
+.modal-body,
+.modal-footer {
+  font-family: "Be Vietnam Pro", Arial, Helvetica, sans-serif;
 }

@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
+import { useLanguage } from "../i18n/LanguageContext";
 
 function Register() {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
+
+  const text = t.auth;
 
   const [form, setForm] = useState({
     name: "",
@@ -17,6 +21,17 @@ function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const passwordLengthMessage =
+    language === "en"
+      ? "Password must be at least 6 characters."
+      : "Mật khẩu phải có ít nhất 6 ký tự.";
+
+  const registerSuccessMessage =
+    language === "en"
+      ? "Account created successfully. Please sign in."
+      : "Đăng ký thành công. Vui lòng đăng nhập.";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,141 +45,171 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    if (loading) {
+      return;
+    }
+
     try {
       setMessage("");
       setError("");
+      setLoading(true);
 
-      if (!form.name || !form.email || !form.password) {
-        setError("Vui lòng nhập đầy đủ họ tên, email và mật khẩu.");
+      if (!form.name.trim() || !form.email.trim() || !form.password.trim()) {
+        setError(text.registerRequired);
+        setLoading(false);
         return;
       }
 
       if (form.password.length < 6) {
-        setError("Mật khẩu phải có ít nhất 6 ký tự.");
+        setError(passwordLengthMessage);
+        setLoading(false);
         return;
       }
 
       if (form.password !== form.confirmPassword) {
-        setError("Mật khẩu xác nhận không khớp.");
+        setError(text.passwordNotMatch);
+        setLoading(false);
         return;
       }
 
       await axiosClient.post("/register", {
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
         password: form.password,
       });
 
-      setMessage("Đăng ký thành công. Vui lòng đăng nhập.");
+      setMessage(registerSuccessMessage);
 
       setTimeout(() => {
         navigate("/login");
       }, 1000);
     } catch (err) {
+      console.log("Register error:", err);
+
       setError(
         err.response?.data?.message ||
-          "Đăng ký thất bại. Vui lòng thử lại."
+          err.response?.data?.error ||
+          text.registerFailed
       );
+
+      setLoading(false);
     }
   };
 
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Đăng ký</h1>
-        <p>Tạo tài khoản để đặt phòng trực tuyến.</p>
+        <h1>{text.registerTitle}</h1>
+        <p>{text.registerDesc}</p>
 
         {message && <div className="alert alert-success">{message}</div>}
         {error && <div className="alert alert-error">{error}</div>}
 
         <form onSubmit={handleRegister} className="auth-form">
           <div className="form-group">
-            <label>Họ tên</label>
+            <label>{text.fullName}</label>
+
             <input
               type="text"
               name="name"
-              placeholder="Nhập họ tên"
+              placeholder={text.enterFullName}
               value={form.name}
               onChange={handleChange}
+              autoComplete="name"
+              disabled={loading}
             />
           </div>
 
           <div className="form-group">
-            <label>Email</label>
+            <label>{text.email}</label>
+
             <input
               type="email"
               name="email"
-              placeholder="Nhập email"
+              placeholder={text.enterEmail}
               value={form.email}
               onChange={handleChange}
+              autoComplete="email"
+              disabled={loading}
             />
           </div>
 
           <div className="form-group">
-            <label>Số điện thoại</label>
+            <label>{text.phone}</label>
+
             <input
               type="text"
               name="phone"
-              placeholder="Nhập số điện thoại"
+              placeholder={text.enterPhone}
               value={form.phone}
               onChange={handleChange}
+              autoComplete="tel"
+              disabled={loading}
             />
           </div>
 
           <div className="form-group">
-            <label>Mật khẩu</label>
+            <label>{text.password}</label>
 
             <div className="password-wrapper">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Nhập mật khẩu"
+                placeholder={text.enterPassword}
                 value={form.password}
                 onChange={handleChange}
+                autoComplete="new-password"
+                disabled={loading}
               />
 
               <button
                 type="button"
                 className="show-password-btn"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={loading}
               >
-                {showPassword ? "Ẩn" : "Hiện"}
+                {showPassword ? text.hide : text.show}
               </button>
             </div>
           </div>
 
           <div className="form-group">
-            <label>Xác nhận mật khẩu</label>
+            <label>{text.confirmPassword}</label>
 
             <div className="password-wrapper">
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
-                placeholder="Nhập lại mật khẩu"
+                placeholder={text.enterConfirmPassword}
                 value={form.confirmPassword}
                 onChange={handleChange}
+                autoComplete="new-password"
+                disabled={loading}
               />
 
               <button
                 type="button"
                 className="show-password-btn"
-                onClick={() =>
-                  setShowConfirmPassword(!showConfirmPassword)
-                }
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                disabled={loading}
               >
-                {showConfirmPassword ? "Ẩn" : "Hiện"}
+                {showConfirmPassword ? text.hide : text.show}
               </button>
             </div>
           </div>
 
-          <button type="submit" className="btn btn-primary auth-submit">
-            Đăng ký
+          <button
+            type="submit"
+            className="btn btn-primary auth-submit"
+            disabled={loading}
+          >
+            {loading ? text.registering : text.registerButton}
           </button>
         </form>
 
         <p className="auth-bottom">
-          Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
+          {text.haveAccount} <Link to="/login">{text.loginNow}</Link>
         </p>
       </div>
     </div>

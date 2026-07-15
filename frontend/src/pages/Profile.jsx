@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import { useLanguage } from "../i18n/LanguageContext";
 
 function Profile() {
+  const { t, language } = useLanguage();
+
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -27,6 +30,110 @@ function Profile() {
   const [passwordMessage, setPasswordMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  const text = {
+    title: language === "en" ? "My profile" : "Hồ sơ cá nhân",
+    subtitle:
+      language === "en"
+        ? "Manage your account information, avatar, and login password."
+        : "Quản lý thông tin tài khoản, ảnh đại diện và mật khẩu đăng nhập.",
+    accountInfo:
+      language === "en" ? "Account information" : "Thông tin tài khoản",
+    currentAvatar:
+      language === "en" ? "Current avatar" : "Ảnh đại diện hiện tại",
+    uploadingAvatar:
+      language === "en" ? "Uploading image..." : "Đang tải ảnh...",
+    chooseImage:
+      language === "en" ? "Choose image from device" : "Chọn ảnh từ máy",
+    fullName: language === "en" ? "Full name" : "Họ tên",
+    email: "Email",
+    phone: language === "en" ? "Phone number" : "Số điện thoại",
+    avatarUrl:
+      language === "en" ? "Avatar image URL" : "Đường dẫn ảnh đại diện",
+    avatarNote:
+      language === "en"
+        ? "You can enter an image URL manually or upload an image above."
+        : "Có thể nhập thủ công hoặc chọn ảnh từ máy ở phía trên.",
+    role: language === "en" ? "Role" : "Vai trò",
+    updateProfile:
+      language === "en" ? "Update profile" : "Cập nhật hồ sơ",
+    changePassword:
+      language === "en" ? "Change password" : "Đổi mật khẩu",
+    oldPassword:
+      language === "en" ? "Current password" : "Mật khẩu cũ",
+    newPassword:
+      language === "en" ? "New password" : "Mật khẩu mới",
+    confirmNewPassword:
+      language === "en" ? "Confirm new password" : "Xác nhận mật khẩu mới",
+    enterFullName:
+      language === "en" ? "Enter full name" : "Nhập họ tên",
+    enterEmail:
+      language === "en" ? "Enter email" : "Nhập email",
+    enterPhone:
+      language === "en" ? "Enter phone number" : "Nhập số điện thoại",
+    enterOldPassword:
+      language === "en" ? "Enter current password" : "Nhập mật khẩu cũ",
+    enterNewPassword:
+      language === "en" ? "Enter new password" : "Nhập mật khẩu mới",
+    enterConfirmPassword:
+      language === "en"
+        ? "Re-enter new password"
+        : "Nhập lại mật khẩu mới",
+    show: language === "en" ? "Show" : "Hiện",
+    hide: language === "en" ? "Hide" : "Ẩn",
+    loadFailed:
+      language === "en"
+        ? "Unable to load profile information."
+        : "Không thể tải thông tin hồ sơ.",
+    uploadSuccess:
+      language === "en"
+        ? "Avatar uploaded successfully."
+        : "Upload ảnh đại diện thành công.",
+    uploadFailed:
+      language === "en"
+        ? "Avatar upload failed."
+        : "Upload ảnh đại diện thất bại.",
+    requiredProfile:
+      language === "en"
+        ? "Please enter your full name and email."
+        : "Vui lòng nhập họ tên và email.",
+    updateSuccess:
+      language === "en"
+        ? "Profile updated successfully."
+        : "Cập nhật hồ sơ thành công.",
+    updateFailed:
+      language === "en"
+        ? "Profile update failed."
+        : "Cập nhật hồ sơ thất bại.",
+    passwordRequired:
+      language === "en"
+        ? "Please enter all password information."
+        : "Vui lòng nhập đầy đủ thông tin mật khẩu.",
+    passwordMinLength:
+      language === "en"
+        ? "New password must be at least 6 characters."
+        : "Mật khẩu mới phải có ít nhất 6 ký tự.",
+    passwordNotMatch:
+      language === "en"
+        ? "Password confirmation does not match."
+        : "Mật khẩu xác nhận không khớp.",
+    passwordSuccess:
+      language === "en"
+        ? "Password changed successfully."
+        : "Đổi mật khẩu thành công.",
+    passwordFailed:
+      language === "en"
+        ? "Password change failed."
+        : "Đổi mật khẩu thất bại.",
+  };
+
+  const getApiErrorMessage = (err, fallback) => {
+    if (language === "en") {
+      return fallback;
+    }
+
+    return err.response?.data?.message || err.response?.data?.error || fallback;
+  };
+
   const loadProfile = async () => {
     try {
       setError("");
@@ -44,13 +151,13 @@ function Profile() {
         });
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Không thể tải thông tin hồ sơ.");
+      setError(getApiErrorMessage(err, text.loadFailed));
     }
   };
 
   useEffect(() => {
     loadProfile();
-  }, []);
+  }, [language]);
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
@@ -91,7 +198,8 @@ function Profile() {
         },
       });
 
-      const updatedUser = response.data?.data?.user || response.data?.user || null;
+      const updatedUser =
+        response.data?.data?.user || response.data?.user || null;
 
       if (updatedUser) {
         setProfile({
@@ -103,15 +211,16 @@ function Profile() {
         });
 
         localStorage.setItem("user", JSON.stringify(updatedUser));
+        localStorage.setItem("authUser", JSON.stringify(updatedUser));
       }
 
-      setMessage("Upload ảnh đại diện thành công.");
+      setMessage(text.uploadSuccess);
 
       setTimeout(() => {
         window.location.reload();
       }, 700);
     } catch (err) {
-      setError(err.response?.data?.message || "Upload ảnh đại diện thất bại.");
+      setError(getApiErrorMessage(err, text.uploadFailed));
     } finally {
       setUploadingAvatar(false);
     }
@@ -124,31 +233,33 @@ function Profile() {
       setMessage("");
       setError("");
 
-      if (!profile.name || !profile.email) {
-        setError("Vui lòng nhập họ tên và email.");
+      if (!profile.name.trim() || !profile.email.trim()) {
+        setError(text.requiredProfile);
         return;
       }
 
       const response = await axiosClient.put("/profile", {
-        name: profile.name,
-        email: profile.email,
-        phone: profile.phone,
+        name: profile.name.trim(),
+        email: profile.email.trim(),
+        phone: profile.phone.trim(),
         avatar_url: profile.avatar_url,
       });
 
-      const updatedUser = response.data?.data?.user || response.data?.user || null;
+      const updatedUser =
+        response.data?.data?.user || response.data?.user || null;
 
       if (updatedUser) {
         localStorage.setItem("user", JSON.stringify(updatedUser));
+        localStorage.setItem("authUser", JSON.stringify(updatedUser));
       }
 
-      setMessage("Cập nhật hồ sơ thành công.");
+      setMessage(text.updateSuccess);
 
       setTimeout(() => {
         window.location.reload();
       }, 800);
     } catch (err) {
-      setError(err.response?.data?.message || "Cập nhật hồ sơ thất bại.");
+      setError(getApiErrorMessage(err, text.updateFailed));
     }
   };
 
@@ -159,24 +270,28 @@ function Profile() {
       setPasswordMessage("");
       setPasswordError("");
 
-      if (!passwordForm.old_password || !passwordForm.new_password || !passwordForm.confirm_password) {
-        setPasswordError("Vui lòng nhập đầy đủ thông tin mật khẩu.");
+      if (
+        !passwordForm.old_password ||
+        !passwordForm.new_password ||
+        !passwordForm.confirm_password
+      ) {
+        setPasswordError(text.passwordRequired);
         return;
       }
 
       if (passwordForm.new_password.length < 6) {
-        setPasswordError("Mật khẩu mới phải có ít nhất 6 ký tự.");
+        setPasswordError(text.passwordMinLength);
         return;
       }
 
       if (passwordForm.new_password !== passwordForm.confirm_password) {
-        setPasswordError("Mật khẩu xác nhận không khớp.");
+        setPasswordError(text.passwordNotMatch);
         return;
       }
 
       await axiosClient.put("/change-password", passwordForm);
 
-      setPasswordMessage("Đổi mật khẩu thành công.");
+      setPasswordMessage(text.passwordSuccess);
 
       setPasswordForm({
         old_password: "",
@@ -184,30 +299,34 @@ function Profile() {
         confirm_password: "",
       });
     } catch (err) {
-      setPasswordError(err.response?.data?.message || "Đổi mật khẩu thất bại.");
+      setPasswordError(getApiErrorMessage(err, text.passwordFailed));
     }
   };
 
   return (
     <div className="profile-page">
       <div className="page-header">
-        <h1>Hồ sơ cá nhân</h1>
-        <p>Quản lý thông tin tài khoản, ảnh đại diện và mật khẩu đăng nhập.</p>
+        <h1>{text.title}</h1>
+        <p>{text.subtitle}</p>
       </div>
 
       <div className="profile-grid">
         <div className="profile-card">
-          <h2>Thông tin tài khoản</h2>
+          <h2>{text.accountInfo}</h2>
 
           {message && <div className="alert alert-success">{message}</div>}
           {error && <div className="alert alert-error">{error}</div>}
 
           <form onSubmit={handleUpdateProfile} className="profile-form">
             <div className="profile-avatar-preview-box">
-              <p>Ảnh đại diện hiện tại</p>
+              <p>{text.currentAvatar}</p>
 
               {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt="" className="profile-avatar-preview" />
+                <img
+                  src={profile.avatar_url}
+                  alt="Avatar"
+                  className="profile-avatar-preview"
+                />
               ) : (
                 <div className="profile-avatar-placeholder">
                   {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
@@ -216,7 +335,8 @@ function Profile() {
 
               <div className="avatar-upload-area">
                 <label className="avatar-upload-btn">
-                  {uploadingAvatar ? "Đang tải ảnh..." : "Chọn ảnh từ máy"}
+                  {uploadingAvatar ? text.uploadingAvatar : text.chooseImage}
+
                   <input
                     type="file"
                     accept="image/png,image/jpeg,image/webp"
@@ -228,72 +348,89 @@ function Profile() {
             </div>
 
             <div className="form-group">
-              <label>Họ tên</label>
+              <label>{text.fullName}</label>
+
               <input
                 type="text"
                 name="name"
                 value={profile.name}
                 onChange={handleProfileChange}
-                placeholder="Nhập họ tên"
+                placeholder={text.enterFullName}
               />
             </div>
 
             <div className="form-group">
-              <label>Email</label>
+              <label>{text.email}</label>
+
               <input
                 type="email"
                 name="email"
                 value={profile.email}
                 onChange={handleProfileChange}
-                placeholder="Nhập email"
+                placeholder={text.enterEmail}
               />
             </div>
 
             <div className="form-group">
-              <label>Số điện thoại</label>
+              <label>{text.phone}</label>
+
               <input
                 type="text"
                 name="phone"
                 value={profile.phone}
                 onChange={handleProfileChange}
-                placeholder="Nhập số điện thoại"
+                placeholder={text.enterPhone}
               />
             </div>
 
             <div className="form-group">
-              <label>Đường dẫn ảnh đại diện</label>
+              <label>{text.avatarUrl}</label>
+
               <input
                 type="text"
                 name="avatar_url"
                 value={profile.avatar_url}
                 onChange={handleProfileChange}
-                placeholder="/images/avatars/admin-avatar.jpg"
+                placeholder="/images/avatars/customer-avatar.jpg"
               />
-              <small className="profile-note">
-                Có thể nhập thủ công hoặc chọn ảnh từ máy ở phía trên.
-              </small>
+
+              <small className="profile-note">{text.avatarNote}</small>
             </div>
 
             <div className="form-group">
-              <label>Vai trò</label>
-              <input type="text" value={profile.role} disabled />
+              <label>{text.role}</label>
+
+              <input
+                type="text"
+                value={
+                  profile.role === "admin"
+                    ? t.nav.administrator
+                    : t.nav.customer
+                }
+                disabled
+              />
             </div>
 
             <button type="submit" className="btn btn-primary">
-              Cập nhật hồ sơ
+              {text.updateProfile}
             </button>
           </form>
         </div>
 
         <div className="profile-card">
-          <h2>Đổi mật khẩu</h2>
+          <h2>{text.changePassword}</h2>
 
-          {passwordMessage && <div className="alert alert-success">{passwordMessage}</div>}
-          {passwordError && <div className="alert alert-error">{passwordError}</div>}
+          {passwordMessage && (
+            <div className="alert alert-success">{passwordMessage}</div>
+          )}
+
+          {passwordError && (
+            <div className="alert alert-error">{passwordError}</div>
+          )}
 
           <form onSubmit={handleChangePassword} className="profile-form">
             <div className="form-group">
-              <label>Mật khẩu cũ</label>
+              <label>{text.oldPassword}</label>
 
               <div className="password-wrapper">
                 <input
@@ -301,7 +438,7 @@ function Profile() {
                   name="old_password"
                   value={passwordForm.old_password}
                   onChange={handlePasswordChange}
-                  placeholder="Nhập mật khẩu cũ"
+                  placeholder={text.enterOldPassword}
                 />
 
                 <button
@@ -309,13 +446,13 @@ function Profile() {
                   className="show-password-btn"
                   onClick={() => setShowOldPassword(!showOldPassword)}
                 >
-                  {showOldPassword ? "Ẩn" : "Hiện"}
+                  {showOldPassword ? text.hide : text.show}
                 </button>
               </div>
             </div>
 
             <div className="form-group">
-              <label>Mật khẩu mới</label>
+              <label>{text.newPassword}</label>
 
               <div className="password-wrapper">
                 <input
@@ -323,7 +460,7 @@ function Profile() {
                   name="new_password"
                   value={passwordForm.new_password}
                   onChange={handlePasswordChange}
-                  placeholder="Nhập mật khẩu mới"
+                  placeholder={text.enterNewPassword}
                 />
 
                 <button
@@ -331,13 +468,13 @@ function Profile() {
                   className="show-password-btn"
                   onClick={() => setShowNewPassword(!showNewPassword)}
                 >
-                  {showNewPassword ? "Ẩn" : "Hiện"}
+                  {showNewPassword ? text.hide : text.show}
                 </button>
               </div>
             </div>
 
             <div className="form-group">
-              <label>Xác nhận mật khẩu mới</label>
+              <label>{text.confirmNewPassword}</label>
 
               <div className="password-wrapper">
                 <input
@@ -345,21 +482,23 @@ function Profile() {
                   name="confirm_password"
                   value={passwordForm.confirm_password}
                   onChange={handlePasswordChange}
-                  placeholder="Nhập lại mật khẩu mới"
+                  placeholder={text.enterConfirmPassword}
                 />
 
                 <button
                   type="button"
                   className="show-password-btn"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  onClick={() =>
+                    setShowConfirmPassword(!showConfirmPassword)
+                  }
                 >
-                  {showConfirmPassword ? "Ẩn" : "Hiện"}
+                  {showConfirmPassword ? text.hide : text.show}
                 </button>
               </div>
             </div>
 
             <button type="submit" className="btn btn-primary">
-              Đổi mật khẩu
+              {text.changePassword}
             </button>
           </form>
         </div>
