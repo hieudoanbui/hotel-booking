@@ -1,18 +1,14 @@
-/* ==========================================================================
-   1. NAVBAR WRAPPER (STICKY & GLASSMORPHISM)
-   ========================================================================== */
+
 .app-navbar {
   width: 100%;
-  position: sticky; /* Bám sát đỉnh màn hình khi cuộn */
+  position: sticky; 
   top: 0;
   z-index: 1000;
   
-  /* Hiệu ứng kính mờ thời thượng xuyên thấu banner ảnh phía sau */
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   
-  /* Đường viền mảnh tinh tế và đổ bóng siêu nhẹ */
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
   transition: all 0.3s ease;
@@ -29,9 +25,6 @@
   gap: 24px;
 }
 
-/* ==========================================================================
-   2. LOGO
-   ========================================================================== */
 .app-navbar-logo {
   color: #0f172a; /* Tông màu tối hiện đại */
   font-size: 22px;
@@ -47,9 +40,7 @@
   transform: scale(1.02); /* Nhấn nhẹ logo khi di chuột */
 }
 
-/* ==========================================================================
-   3. NAVIGATION LINKS (WITH SMOOTH UNDERLINE)
-   ========================================================================== */
+
 .app-navbar-center {
   display: flex;
   align-items: center;
@@ -57,8 +48,8 @@
 }
 
 .app-nav-link {
-  position: relative; /* Bắt buộc để làm mốc cho thanh gạch chân */
-  color: #475569; /* Màu xám Slate dễ chịu */
+  position: relative; 
+  color: #475569;
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
@@ -66,7 +57,7 @@
   transition: color 0.3s ease;
 }
 
-/* Tạo thanh gạch chân mượt mà (ẩn ban đầu) dưới chữ */
+
 .app-nav-link::after {
   content: '';
   position: absolute;
@@ -74,30 +65,28 @@
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: #0f172a; /* Màu gạch chân tiệp với màu logo chính */
+  background-color: #0f172a; 
   transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Khi di chuột qua (Hover) hoặc trang đang hoạt động (Active) */
+
 .app-nav-link:hover {
-  color: #0f172a; /* Chữ đậm màu hơn */
+  color: #0f172a; 
 }
 
 .app-nav-link:hover::after,
 .app-nav-link.active::after {
-  width: 100%; /* Thanh gạch chân chạy dài ra 100% mượt mà */
+  width: 100%; 
 }
 
-/* ==========================================================================
-   4. NAVBAR RIGHT (USER AREA & BUTTONS) - GIỮ NGUYÊN HOÀN TOÀN
-   ========================================================================== */
+
 .app-navbar-right {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-/* User Profile Avatar */
+
 .app-navbar-user {
   position: relative;
   display: flex;
@@ -161,9 +150,7 @@
   background-color: #1e293b;
 }
 
-/* ==========================================================================
-   5. DROPDOWN MENU (ADMIN & USER) - GIỮ NGUYÊN HOÀN TOÀN
-   ========================================================================== */
+
 .app-dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
@@ -215,9 +202,7 @@
   color: #dc2626;
 }
 
-/* ==========================================================================
-   6. RESPONSIVE MOBILE MENU - GIỮ NGUYÊN HOÀN TOÀN
-   ========================================================================== */
+
 .app-menu-toggle {
   display: none;
   background: none;
@@ -234,7 +219,7 @@
   }
 
   .app-navbar-center {
-    display: none; /* Ẩn menu chính trên mobile */
+    display: none; 
   }
 
   .app-navbar-center.mobile-open {
@@ -257,6 +242,6 @@
   }
   
   .app-nav-link::after {
-    display: none; /* Tắt hiệu ứng gạch ngang trên điện thoại để tránh lỗi hiển thị lệch */
+    display: none; 
   }
 }
