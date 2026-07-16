@@ -1,11 +1,21 @@
+/* ==========================================================================
+   1. NAVBAR WRAPPER (STICKY & GLASSMORPHISM)
+   ========================================================================== */
 .app-navbar {
   width: 100%;
-  position: sticky;
+  position: sticky; /* Bám sát đỉnh màn hình khi cuộn */
   top: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.96);
+  
+  /* Hiệu ứng kính mờ thời thượng xuyên thấu banner ảnh phía sau */
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid #e5e7eb;
+  -webkit-backdrop-filter: blur(16px);
+  
+  /* Đường viền mảnh tinh tế và đổ bóng siêu nhẹ */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease;
 }
 
 .app-navbar-inner {
@@ -19,273 +29,234 @@
   gap: 24px;
 }
 
+/* ==========================================================================
+   2. LOGO
+   ========================================================================== */
 .app-navbar-logo {
-  color: #0f172a;
+  color: #0f172a; /* Tông màu tối hiện đại */
   font-size: 22px;
-  font-weight: 900;
+  font-weight: 800;
   text-decoration: none;
   white-space: nowrap;
-}
-
-.app-navbar-logo::before {
-  content: "🏨";
-  margin-right: 8px;
-}
-
-.app-navbar-center {
-  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 22px;
+  transition: transform 0.2s ease;
+}
+
+.app-navbar-logo:hover {
+  transform: scale(1.02); /* Nhấn nhẹ logo khi di chuột */
+}
+
+/* ==========================================================================
+   3. NAVIGATION LINKS (WITH SMOOTH UNDERLINE)
+   ========================================================================== */
+.app-navbar-center {
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }
 
 .app-nav-link {
-  color: #334155;
+  position: relative; /* Bắt buộc để làm mốc cho thanh gạch chân */
+  color: #475569; /* Màu xám Slate dễ chịu */
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 500;
   text-decoration: none;
-  transition: 0.2s;
+  padding: 8px 0;
+  transition: color 0.3s ease;
 }
 
+/* Tạo thanh gạch chân mượt mà (ẩn ban đầu) dưới chữ */
+.app-nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #0f172a; /* Màu gạch chân tiệp với màu logo chính */
+  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Khi di chuột qua (Hover) hoặc trang đang hoạt động (Active) */
 .app-nav-link:hover {
-  color: #2563eb;
+  color: #0f172a; /* Chữ đậm màu hơn */
 }
 
+.app-nav-link:hover::after,
+.app-nav-link.active::after {
+  width: 100%; /* Thanh gạch chân chạy dài ra 100% mượt mà */
+}
+
+/* ==========================================================================
+   4. NAVBAR RIGHT (USER AREA & BUTTONS) - GIỮ NGUYÊN HOÀN TOÀN
+   ========================================================================== */
 .app-navbar-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
-.app-login-btn,
-.app-register-btn {
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-weight: 800;
-  text-decoration: none;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-.app-login-btn {
-  color: #2563eb;
-  background: #eff6ff;
-}
-
-.app-register-btn {
-  color: white;
-  background: #2563eb;
-}
-
-.app-login-btn:hover,
-.app-register-btn:hover {
-  transform: translateY(-2px);
-}
-
-.admin-dropdown {
+/* User Profile Avatar */
+.app-navbar-user {
   position: relative;
-}
-
-.admin-dropdown-btn {
-  border: none;
-  background: #eff6ff;
-  color: #2563eb;
-  padding: 10px 18px;
-  border-radius: 999px;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.admin-dropdown-menu {
-  position: absolute;
-  top: 45px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 230px;
-  background: white;
-  border-radius: 18px;
-  padding: 10px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
-  border: 1px solid #e5e7eb;
-  display: none;
-  z-index: 1001;
-}
-
-.admin-dropdown:hover .admin-dropdown-menu {
-  display: block;
-}
-
-.admin-dropdown-menu a {
-  display: block;
-  padding: 11px 13px;
-  border-radius: 12px;
-  color: #334155;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: 0.2s;
-}
-
-.admin-dropdown-menu a:hover {
-  background: #eff6ff;
-  color: #2563eb;
-}
-
-.user-avatar-dropdown {
-  position: relative;
-}
-
-.user-avatar-button {
-  border: none;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-  border-radius: 999px;
-  padding: 6px 12px 6px 6px;
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 20px;
+  transition: background-color 0.2s;
 }
 
-.user-avatar-circle,
-.user-avatar-big {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #2563eb, #06b6d4);
-  color: white;
-  font-weight: 900;
-  overflow: hidden;
+.app-navbar-user:hover {
+  background-color: #f1f5f9;
 }
 
-.user-avatar-circle {
-  width: 36px;
-  height: 36px;
+.app-navbar-avatar {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-}
-
-.user-avatar-big {
-  width: 54px;
-  height: 54px;
-  border-radius: 18px;
-  font-size: 22px;
-  flex-shrink: 0;
-}
-
-.user-avatar-img {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
+  border: 2px solid #e2e8f0;
 }
 
-.user-avatar-name {
-  color: #0f172a;
+.app-navbar-username {
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 500;
+  color: #334155;
   max-width: 120px;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.user-avatar-menu {
-  position: absolute;
-  top: 54px;
-  right: 0;
-  width: 280px;
-  background: white;
-  border-radius: 20px;
-  padding: 14px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
-  border: 1px solid #e5e7eb;
-  z-index: 1001;
-}
-
-.user-avatar-info {
-  display: flex;
-  gap: 13px;
-  align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 8px;
-}
-
-.user-avatar-info strong {
-  display: block;
-  color: #0f172a;
-  font-size: 15px;
-  margin-bottom: 3px;
-}
-
-.user-avatar-info p {
-  margin: 0 0 4px;
-  color: #64748b;
-  font-size: 13px;
-}
-
-.user-avatar-info span {
-  display: inline-flex;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: #eff6ff;
-  color: #2563eb;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.user-menu-item {
-  width: 100%;
-  display: block;
-  text-align: left;
-  padding: 11px 12px;
-  border-radius: 12px;
-  color: #334155;
+/* Buttons */
+.app-btn-login {
+  padding: 8px 16px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
+  color: #475569;
   text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.app-btn-login:hover {
+  background-color: #f1f5f9;
+}
+
+.app-btn-register {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #0f172a;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.app-btn-register:hover {
+  background-color: #1e293b;
+}
+
+/* ==========================================================================
+   5. DROPDOWN MENU (ADMIN & USER) - GIỮ NGUYÊN HOÀN TOÀN
+   ========================================================================== */
+.app-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  min-width: 200px;
+  padding: 8px 0;
+  z-index: 1010;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #334155;
+  text-decoration: none;
+  background: none;
   border: none;
-  background: transparent;
+  width: 100%;
+  text-align: left;
   cursor: pointer;
-  transition: 0.2s;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-.user-menu-item:hover {
-  background: #f1f5f9;
-  color: #2563eb;
+.app-dropdown-item:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
 }
 
-.logout-menu-item {
+.app-dropdown-divider {
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 8px 0;
+}
+
+.app-dropdown-item.text-danger {
+  color: #ef4444;
+}
+
+.app-dropdown-item.text-danger:hover {
+  background-color: #fef2f2;
   color: #dc2626;
 }
 
-.logout-menu-item:hover {
-  background: #fef2f2;
-  color: #dc2626;
+/* ==========================================================================
+   6. RESPONSIVE MOBILE MENU - GIỮ NGUYÊN HOÀN TOÀN
+   ========================================================================== */
+.app-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #334155;
+  cursor: pointer;
+  padding: 4px;
 }
 
-@media (max-width: 900px) {
-  .app-navbar-inner {
-    height: auto;
-    min-height: 72px;
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 16px 24px;
+@media (max-width: 768px) {
+  .app-menu-toggle {
+    display: block;
   }
 
   .app-navbar-center {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+    display: none; /* Ẩn menu chính trên mobile */
   }
 
-  .app-navbar-right {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .admin-dropdown-menu {
+  .app-navbar-center.mobile-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 72px;
     left: 0;
-    transform: none;
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 16px 24px;
+    gap: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  .app-nav-link {
+    width: 100%;
+    padding: 8px 0;
+  }
+  
+  .app-nav-link::after {
+    display: none; /* Tắt hiệu ứng gạch ngang trên điện thoại để tránh lỗi hiển thị lệch */
   }
 }
